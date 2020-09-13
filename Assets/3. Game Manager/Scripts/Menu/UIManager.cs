@@ -10,15 +10,17 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField] private PauseMenu pauseMenu;
 
+    public Events.EventFadeComplete OnMainMenuFadeComplete;
 
     private void Start()
     {
         //registor for GameState changes
         GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
+        mainMenu.OnMainMenuFadeComplete.AddListener(HandleMainMenuFadeComplete);
     }
-    private void HandleGameStateChanged(GameManager.GameState currentState, GameManager.GameState previousState)
+    private void HandleMainMenuFadeComplete(bool fadeOut)
     {
-        pauseMenu.gameObject.SetActive(currentState == GameManager.GameState.PAUSED);
+        OnMainMenuFadeComplete.Invoke(fadeOut);
     }
     private void Update()
     {
@@ -32,6 +34,14 @@ public class UIManager : Singleton<UIManager>
             GameManager.Instance.StartGame();
         }
     }
+
+    private void HandleGameStateChanged(GameManager.GameState currentState, GameManager.GameState previousState)
+    {
+        pauseMenu.gameObject.SetActive(currentState == GameManager.GameState.PAUSED);
+    }
+
+
+
 
     public void SetDummyCameraActive(bool active)
     {

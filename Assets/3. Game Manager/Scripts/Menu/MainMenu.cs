@@ -11,6 +11,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private AnimationClip fadeOutAnimation;
     [SerializeField] private AnimationClip fadeInAnimation;
 
+    public Events.EventFadeComplete OnMainMenuFadeComplete; //We will register this event to know when it is complete
+
     private void Start()
     {
         //registor for event
@@ -19,13 +21,12 @@ public class MainMenu : MonoBehaviour
 
     public void OnFadeOutComplete()
     {
-        Debug.LogWarning("Fade out complete!");
+        OnMainMenuFadeComplete.Invoke(true);
     }
 
     public void OnFadeInComplete()
     {
-        Debug.LogWarning("Fade in complete!");
-
+        OnMainMenuFadeComplete.Invoke(false);
         UIManager.Instance.SetDummyCameraActive(true);
     }
 
@@ -47,9 +48,14 @@ public class MainMenu : MonoBehaviour
 
     private void HandleGameStateChanged(GameManager.GameState currentState, GameManager.GameState previousState)
     {
-        if(previousState.Equals(GameManager.GameState.PREGAME) && currentState.Equals(GameManager.GameState.RUNNING))
+        if (previousState.Equals(GameManager.GameState.PREGAME) && currentState.Equals(GameManager.GameState.RUNNING))
         {
             FadeOut();
+        }
+
+        if (!previousState.Equals(GameManager.GameState.PREGAME) && currentState.Equals(GameManager.GameState.PREGAME))
+        {
+            FadeIn();
         }
     }
 }

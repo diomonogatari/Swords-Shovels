@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Events;
 
-[System.Serializable]//Visible in editor
-public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState>
-{
-    /*T0 = currentIncoming GameState; T1 = previous GameState  */
 
-}
+
 
 public class GameManager : Singleton<GameManager>
 {
@@ -29,7 +24,7 @@ public class GameManager : Singleton<GameManager>
 
     private GameState currentGameState = GameState.PREGAME;
 
-    public EventGameState OnGameStateChanged;
+    public Events.EventGameState OnGameStateChanged;
 
 
     // generate other persistent systems
@@ -65,9 +60,11 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(gameObject);//never ever destroy my Game Manager pls :D
 
         instancedSystemPrefabs = new List<GameObject>();
+        loadOperationsList = new List<AsyncOperation>();
+
         InstantiateSystemPrefabs();
 
-        loadOperationsList = new List<AsyncOperation>();
+        UIManager.Instance.OnMainMenuFadeComplete.AddListener(HandleMainMenuFadeComplete);
     }
     private void Update()
     {
@@ -174,7 +171,6 @@ public class GameManager : Singleton<GameManager>
     private void OnUnLoadOperationComplete(AsyncOperation ao)
     {
         Debug.Log("Unload Complete.");
-        throw new System.NotImplementedException();
     }
     #endregion
 
@@ -187,5 +183,25 @@ public class GameManager : Singleton<GameManager>
     {
         //condition ? true : false;
         UpdateState(currentGameState.Equals(GameState.RUNNING) ? GameState.PAUSED : GameState.RUNNING);
+    }
+    public void RestartGame()
+    {
+        // Pregame -> Running is how we start
+        // restarting is the reverse
+        UpdateState(GameState.PREGAME);
+    }
+    public void QuitGame()
+    {
+        // implement features for quitting, like saving
+
+        Application.Quit();
+    }
+
+    private void HandleMainMenuFadeComplete(bool fadeOut)
+    {
+        if (!fadeOut)
+        {
+            UnloadLevel(currentLevelName);
+        }
     }
 }
