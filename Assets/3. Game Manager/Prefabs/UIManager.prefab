@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224572580354962894}
+  - component: {fileID: 7682005350073863455}
   m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
@@ -36,6 +37,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7682005350073863455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022039478163996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cbba75d911335e46827b0da381b923d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resumeButton: {fileID: 114615682490614664}
+  restartButton: {fileID: 114110037165574424}
+  quitButton: {fileID: 114161082283702470}
 --- !u!1 &1052357631752932
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,6 +597,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 7217537892208449739}
   dummyCamera: {fileID: 20757272912230474}
+  pauseMenu: {fileID: 7682005350073863455}
 --- !u!1 &1495308988550548
 GameObject:
   m_ObjectHideFlags: 0

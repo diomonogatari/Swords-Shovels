@@ -8,9 +8,21 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField] private Camera dummyCamera;
 
+    [SerializeField] private PauseMenu pauseMenu;
+
+
+    private void Start()
+    {
+        //registor for GameState changes
+        GameManager.Instance.OnGameStateChanged.AddListener(HandleGameStateChanged);
+    }
+    private void HandleGameStateChanged(GameManager.GameState currentState, GameManager.GameState previousState)
+    {
+        pauseMenu.gameObject.SetActive(currentState == GameManager.GameState.PAUSED);
+    }
     private void Update()
     {
-        if(GameManager.Instance.CurrentGameState != GameManager.GameState.PREGAME)
+        if (GameManager.Instance.CurrentGameState != GameManager.GameState.PREGAME)
         {
             return;
         }
@@ -18,7 +30,6 @@ public class UIManager : Singleton<UIManager>
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameManager.Instance.StartGame();
-            //mainMenu.FadeOut();//Call the animation
         }
     }
 

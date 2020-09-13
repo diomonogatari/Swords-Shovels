@@ -6,10 +6,8 @@ using UnityEngine.Events;
 
 [System.Serializable]//Visible in editor
 public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState>
-{ 
-    /*T0 = currentIncoming GameState
-    T1 = previous GameState
-     */
+{
+    /*T0 = currentIncoming GameState; T1 = previous GameState  */
 
 }
 
@@ -61,7 +59,7 @@ public class GameManager : Singleton<GameManager>
             Debug.LogError("[Game Manager] instance destroyed! There can only be one instance of GameManager!");
         }
     }
-
+    #region Base LifeCycle
     private void Start()
     {
         DontDestroyOnLoad(gameObject);//never ever destroy my Game Manager pls :D
@@ -71,6 +69,19 @@ public class GameManager : Singleton<GameManager>
 
         loadOperationsList = new List<AsyncOperation>();
     }
+    private void Update()
+    {
+        if (currentGameState.Equals(GameState.PREGAME))
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.TogglePause();
+        }
+    }
+    #endregion
 
     private void UpdateState(GameState state)
     {
@@ -80,16 +91,20 @@ public class GameManager : Singleton<GameManager>
         switch (currentGameState)
         {
             case GameState.PREGAME:
+                Time.timeScale = 1f;
                 break;
             case GameState.RUNNING:
+                Time.timeScale = 1f;
                 break;
             case GameState.PAUSED:
+                Time.timeScale = 0f;
                 break;
             default:
                 Debug.LogWarning("[GameManager] tried to update GameState to a value not possible. Default entered");
                 break;
         }
-        OnGameStateChanged.Invoke(currentGameState,previousGameState);
+
+        OnGameStateChanged.Invoke(currentGameState, previousGameState);
     }
 
     private void InstantiateSystemPrefabs()
@@ -168,4 +183,9 @@ public class GameManager : Singleton<GameManager>
         LoadLevel("Main");
     }
 
+    public void TogglePause()
+    {
+        //condition ? true : false;
+        UpdateState(currentGameState.Equals(GameState.RUNNING) ? GameState.PAUSED : GameState.RUNNING);
+    }
 }
