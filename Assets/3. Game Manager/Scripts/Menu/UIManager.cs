@@ -10,9 +10,15 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
+        if(GameManager.Instance.CurrentGameState != GameManager.GameState.PREGAME)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            mainMenu.FadeOut();//Call the animation
+            GameManager.Instance.StartGame();
+            //mainMenu.FadeOut();//Call the animation
         }
     }
 

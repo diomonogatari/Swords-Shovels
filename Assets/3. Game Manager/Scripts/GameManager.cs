@@ -2,15 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+
+[System.Serializable]//Visible in editor
+public class EventGameState : UnityEvent<GameManager.GameState, GameManager.GameState>
+{ 
+    /*T0 = currentIncoming GameState
+    T1 = previous GameState
+     */
+
+}
 
 public class GameManager : Singleton<GameManager>
 {
     // keep track of the game state
+    //PREGAME, RUNNING, PAUSED
+    public enum GameState
+    {
+        PREGAME,
+        RUNNING,
+        PAUSED
+    }
+    public GameState CurrentGameState
+    {
+        get { return currentGameState; }
+        private set { currentGameState = value; }//Only GameManager can write State
+    }
+
+    private GameState currentGameState = GameState.PREGAME;
+
+    public EventGameState OnGameStateChanged;
+
+
     // generate other persistent systems
     // what level the game is currently in
 
     public GameObject[] SystemPrefabs;//a collection of things to keep track of
     private List<GameObject> instancedSystemPrefabs;
+
 
     private string currentLevelName = string.Empty;
 
@@ -21,7 +50,7 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        if(instance == null)
+        if (instance == null)
         {
             //I am the 1st being created!
             instance = this;
@@ -38,17 +67,35 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(gameObject);//never ever destroy my Game Manager pls :D
 
         instancedSystemPrefabs = new List<GameObject>();
-
         InstantiateSystemPrefabs();
 
         loadOperationsList = new List<AsyncOperation>();
-        LoadLevel("Main");
+    }
+
+    private void UpdateState(GameState state)
+    {
+        GameState previousGameState = currentGameState;
+        currentGameState = state;
+
+        switch (currentGameState)
+        {
+            case GameState.PREGAME:
+                break;
+            case GameState.RUNNING:
+                break;
+            case GameState.PAUSED:
+                break;
+            default:
+                Debug.LogWarning("[GameManager] tried to update GameState to a value not possible. Default entered");
+                break;
+        }
+        OnGameStateChanged.Invoke(currentGameState,previousGameState);
     }
 
     private void InstantiateSystemPrefabs()
     {
         GameObject prefabInstance; //store what is instantiated to stuff them into our manager list
-        for(int i = 0; i< SystemPrefabs.Length; i++)
+        for (int i = 0; i < SystemPrefabs.Length; i++)
         {
             prefabInstance = Instantiate(SystemPrefabs[i]);//create the prefabs managers
 
@@ -60,7 +107,7 @@ public class GameManager : Singleton<GameManager>
     {
         base.OnDestroy();
 
-        for(int i = 0; i< instancedSystemPrefabs.Count; i++)
+        for (int i = 0; i < instancedSystemPrefabs.Count; i++)
         {
             Destroy(instancedSystemPrefabs[i]);
         }
@@ -76,6 +123,8 @@ public class GameManager : Singleton<GameManager>
         {
             loadOperationsList.Remove(ao);
 
+            if (loadOperationsList.Count.Equals(0))//Loads are done
+                UpdateState(GameState.RUNNING);
         }
         Debug.Log("Load Complete.");
     }
@@ -113,5 +162,10 @@ public class GameManager : Singleton<GameManager>
         throw new System.NotImplementedException();
     }
     #endregion
+
+    public void StartGame()
+    {
+        LoadLevel("Main");
+    }
 
 }
