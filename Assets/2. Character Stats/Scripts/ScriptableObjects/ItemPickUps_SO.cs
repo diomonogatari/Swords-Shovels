@@ -11,7 +11,8 @@ public class ItemPickUps_SO : ScriptableObject
     public ItemTypeDefinitions itemType = ItemTypeDefinitions.HEALTH;
     public ItemArmorSubType itemArmorSubType = ItemArmorSubType.None;
     public int itemAmount = 0;
-
+    public int spawnChanceWeight = 0;
     public Rigidbody itemSpawnObject = null;
     public Rigidbody weaponSlotObject = null;
+    public Material itemMaterial = null;
 }
