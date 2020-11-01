@@ -598,6 +598,21 @@ MonoBehaviour:
   mainMenu: {fileID: 7217537892208449739}
   dummyCamera: {fileID: 20757272912230474}
   pauseMenu: {fileID: 7682005350073863455}
+  OnMainMenuFadeComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1368435504543104}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1495308988550548
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,6 +688,9 @@ MonoBehaviour:
   mainMenuAnimator: {fileID: 111958717725990638}
   fadeOutAnimation: {fileID: 7400000, guid: cd3a7154a27cac349b264a32093d18f0, type: 2}
   fadeInAnimation: {fileID: 7400000, guid: af5d964feb87dcd49a040f93b5e3a220, type: 2}
+  OnMainMenuFadeComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1617907883662474
 GameObject:
   m_ObjectHideFlags: 0

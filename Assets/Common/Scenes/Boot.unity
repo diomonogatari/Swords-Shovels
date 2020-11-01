@@ -152,6 +152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487c6a0a9234a784a9813caf4e53ec0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnGameStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
   SystemPrefabs:
   - {fileID: 1368435504543104, guid: 54c97bc568a963f4d945c01fa1a75f19, type: 3}
 --- !u!4 &160244729
