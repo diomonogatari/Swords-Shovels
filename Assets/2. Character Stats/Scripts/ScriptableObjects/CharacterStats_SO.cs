@@ -165,7 +165,7 @@ public class CharacterStats_SO : ScriptableObject
             {
                 previousWeaponSame = true;
             }
-            //charInventory.inventoryDisplaySlots[2].sprite = null;
+            charInventory.inventoryDisplaySlots[2].sprite = null;
             Destroy(weaponSlot.transform.GetChild(1).gameObject);
             weapon = null;
             currentDamage = baseDamage;
@@ -187,7 +187,7 @@ public class CharacterStats_SO : ScriptableObject
                     {
                         previousArmorSame = true;
                     }
-                    //charInventory.inventoryDisplaySlots[3].sprite = null;
+                    charInventory.inventoryDisplaySlots[3].sprite = null;
                     currentResistance -= armorPickUp.itemDefinition.itemAmount;
                     headArmor = null;
                 }
@@ -199,7 +199,7 @@ public class CharacterStats_SO : ScriptableObject
                     {
                         previousArmorSame = true;
                     }
-                    //charInventory.inventoryDisplaySlots[4].sprite = null;
+                    charInventory.inventoryDisplaySlots[4].sprite = null;
                     currentResistance -= armorPickUp.itemDefinition.itemAmount;
                     chestArmor = null;
                 }
@@ -211,7 +211,7 @@ public class CharacterStats_SO : ScriptableObject
                     {
                         previousArmorSame = true;
                     }
-                    //charInventory.inventoryDisplaySlots[5].sprite = null;
+                    charInventory.inventoryDisplaySlots[5].sprite = null;
                     currentResistance -= armorPickUp.itemDefinition.itemAmount;
                     handArmor = null;
                 }
@@ -223,7 +223,7 @@ public class CharacterStats_SO : ScriptableObject
                     {
                         previousArmorSame = true;
                     }
-                    //charInventory.inventoryDisplaySlots[6].sprite = null;
+                    charInventory.inventoryDisplaySlots[6].sprite = null;
                     currentResistance -= armorPickUp.itemDefinition.itemAmount;
                     legArmor = null;
                 }
@@ -235,7 +235,7 @@ public class CharacterStats_SO : ScriptableObject
                     {
                         previousArmorSame = true;
                     }
-                    //charInventory.inventoryDisplaySlots[7].sprite = null;
+                    charInventory.inventoryDisplaySlots[7].sprite = null;
                     currentResistance -= armorPickUp.itemDefinition.itemAmount;
                     footArmor = null;
                 }

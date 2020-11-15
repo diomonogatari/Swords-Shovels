@@ -42,7 +42,26 @@ public class CharacterInventory : MonoBehaviour
     {
         #region Watch for Hotbar Keypresses - Called by Character Controller Later
         //Checking for a hotbar key to be pressed
-        // TODO: Add some keypresses
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            TriggerItemUse(101);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            TriggerItemUse(102);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            TriggerItemUse(103);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            TriggerItemUse(104);
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            DisplayInventory();
+        }
         #endregion
 
         //Check to see if the item has already been added - Prevent duplicate adds for 1 item
@@ -170,21 +189,130 @@ public class CharacterInventory : MonoBehaviour
 
     private void AddItemToHotBar(InventoryEntry itemForHotBar)
     {
+        int hotBarCounter = 0;
+        bool increaseCount = false;
 
+        //Check for open hotbar slot
+        foreach (Image images in hotBarDisplayHolders)
+        {
+            hotBarCounter += 1;
+
+            if (itemForHotBar.hotBarSlot == 0) //We haven't changed anything in the hotbar yet
+            {
+                if (images.sprite == null) //Double checking the previous condition
+                {
+                    //Add item to open hotbar slot
+                    itemForHotBar.hotBarSlot = hotBarCounter;
+                    //Change hotbar sprite to show item
+                    images.sprite = itemForHotBar.hbSprite;
+                    increaseCount = true;
+                    break;
+                }
+            }
+            else if (itemForHotBar.invEntry.itemDefinition.isStackable)
+            {
+                increaseCount = true;
+            }
+        }
+
+        if (increaseCount)
+        {
+            //update the sprite and hotbar item count
+            hotBarDisplayHolders[itemForHotBar.hotBarSlot - 1].GetComponentInChildren<Text>().text = itemForHotBar.stackSize.ToString();
+        }
+
+        increaseCount = false;
     }
 
-    void DisplayInventory()
+    void DisplayInventory() //Show me the inventory display -- Toggle
     {
-
+        if (InventoryDisplayHolder.activeSelf == true)
+        {
+            InventoryDisplayHolder.SetActive(false);
+        }
+        else
+        {
+            InventoryDisplayHolder.SetActive(true);
+        }
     }
 
     void FillInventoryDisplay()
     {
+        int slotCounter = 9; //We have 9 slots
 
+        foreach (KeyValuePair<int, InventoryEntry> ie in itemsInInventory)
+        {
+            slotCounter += 1;
+            inventoryDisplaySlots[slotCounter].sprite = ie.Value.hbSprite;
+            ie.Value.inventorySlot = slotCounter - 9;
+        }
+
+        while (slotCounter < 29)
+        {
+            slotCounter++;
+            inventoryDisplaySlots[slotCounter].sprite = null;
+        }
     }
 
-    public void TriggerItemUse(int itemToUseID)
+    public void TriggerItemUse(int itemToUseID) //Called with button
     {
+        bool triggerItem = false;
 
+        foreach (KeyValuePair<int, InventoryEntry> ie in itemsInInventory) 
+        {
+            if (itemToUseID > 100)
+            {
+                itemToUseID -= 100;
+
+                if (ie.Value.hotBarSlot == itemToUseID)
+                {
+                    triggerItem = true;
+                }
+            }
+            else
+            {
+                if (ie.Value.inventorySlot == itemToUseID)
+                {
+                    triggerItem = true;
+                }
+            }
+
+            if (triggerItem)
+            {
+                if (ie.Value.stackSize == 1)//Do I have only 1 to use?
+                {
+                    if (ie.Value.invEntry.itemDefinition.isStackable) //If it is stackable, use 1 of it
+                    {
+                        if (ie.Value.hotBarSlot != 0)
+                        {
+                            hotBarDisplayHolders[ie.Value.hotBarSlot - 1].sprite = null;
+                            hotBarDisplayHolders[ie.Value.hotBarSlot - 1].GetComponentInChildren<Text>().text = "0";
+                        }
+
+                        ie.Value.invEntry.UseItem(); //Consume
+                        itemsInInventory.Remove(ie.Key); //Get it out of the inventoy dictionary
+                        break;
+                    }
+                    else //it is not from stackable source, use the item entirely
+                    {
+                        ie.Value.invEntry.UseItem();
+                        if (!ie.Value.invEntry.itemDefinition.isIndestructable)
+                        {
+                            itemsInInventory.Remove(ie.Key);
+                            break;
+                        }
+                    }
+                }
+                else //We have more than 1 to use
+                {
+                    ie.Value.invEntry.UseItem(); //Consume
+                    ie.Value.stackSize -= 1; //remove 1 of it
+                    hotBarDisplayHolders[ie.Value.hotBarSlot - 1].GetComponentInChildren<Text>().text = ie.Value.stackSize.ToString(); //update stack to show on screen
+                    break;
+                }
+            }
+        }
+        //Update screen
+        FillInventoryDisplay();
     }
 }
